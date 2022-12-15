@@ -1,0 +1,58 @@
+---
+- name: "managing mariadb"
+  become: true
+  hosts: all
+  vars:
+    packages:
+      - mariadb-server
+      - MySQL-python
+    mysql_root_passwd: "mysql@123"
+    mysql_extra_usr: "sarath"
+    mysql_extra_usr_paswd: "sarath@123"
+    mysql_extra_database: "saradb"
+  tasks:
+    - name: "installing mariadb"
+      yum:
+        name: "{{ packages }}"
+        state: present
+    - name: "Restart/enable mariadb"
+      service:
+        name: mariadb
+        state: restarted
+        enabled: true
+    - name: "set root passwd"
+      ignore_errors: true
+      mysql_user:
+        login_user: "root"
+        login_password: ""
+        user: "root"
+        password: "{{ mysql_root_passwd }}"
+        host_all: true
+    - name: "removing anonymous users"
+      mysql_user:
+        login_user: "root"
+        user: ""
+        login_password: "{{ mysql_root_passwd }}"
+        host_all: true
+        state: absent
+    - name: "create data base"
+      mysql_db:
+        login_user: "root"
+        login_password: "{{ mysql_root_passwd }}"
+        name: "{{ mysql_extra_database }}"
+        state: present
+    - name: "removing test database"
+      mysql_db:
+        login_user: "root"
+        login_password: "{{ mysql_root_passwd }}"
+        name: test
+        state: absent
+    - name: "create extra user"
+      mysql_user:
+        login_user: "root"
+        login_password: "{{ mysql_root_passwd }}"
+        user: "{{ mysql_extra_usr }}"
+        password: "{{ mysql_extra_usr_paswd }}"
+        priv: '{{ mysql_extra_database }}.*:ALL'
+        host: "%"
+        state: present
