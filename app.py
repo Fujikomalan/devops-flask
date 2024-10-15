@@ -5,7 +5,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-  return f"<h1><center> Hello World app! Version  3 {hostname}<center><h1>"
+  
+  return "<h1><center> Hello World app! Version  3 {} <center><h1>".format(hostname)
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0',port=5000)
