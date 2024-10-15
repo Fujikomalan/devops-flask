@@ -9,5 +9,7 @@ def hello():
   return message
 
 if __name__ == "__main__":
+  
+  hostname = os.getenv('HOSTNAME',none)  
   app.run(host='0.0.0.0',port=5000)
-  hostname = os.getenv('HOSTNAME',none)
+  
