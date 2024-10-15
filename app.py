@@ -10,6 +10,6 @@ def hello():
 
 if __name__ == "__main__":
   
-  hostname = os.getenv('HOSTNAME',none)  
+  hostname = os.getenv('HOSTNAME',None)  
   app.run(host='0.0.0.0',port=5000)
   
