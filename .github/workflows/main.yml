@@ -1,0 +1,11 @@
+name: ci
+
+on:
+  workflow_dispatch: 
+  
+jobs:
+  docker:
+    runs-on: self-hosted # Use self-hosted runner
+    steps:
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
