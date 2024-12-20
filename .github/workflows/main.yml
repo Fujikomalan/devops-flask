@@ -35,8 +35,10 @@ jobs:
 
       - name: Stop and Remove Existing Container (if running)
         run: |
-         
-          if [ "$(docker container ls -a -q  flaskapp)" ]; then
+
+          CONTAINER_ID=$(docker container ls -a -q -f "name=flaskapp")
+
+          if [ -n "$CONTAINER_ID"  ]; then
             echo "Stopping and removing existing container 'flaskapp'..."
             docker container stop flaskapp
             docker container rm flaskapp                
