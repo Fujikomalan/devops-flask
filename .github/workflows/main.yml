@@ -1,12 +1,16 @@
-name: ci
+name: Docker Image Build And Deploy
 
 on:
-  workflow_dispatch: 
-  
+  workflow_dispatch:
+
 jobs:
   docker:
-    runs-on: self-hosted # Use self-hosted runner
+    runs-on: self-hosted 
     steps:
-      - name: Docker Version
+      - name: Checking Docker Installation
         run: |
           docker version
+          
+      - name: Checkout repository
+        uses: actions/checkout@v4 
+        
