@@ -8,24 +8,24 @@ jobs:
     env:
       IMAGE_NAME: 'fujikomalan/flask-github'
       
-    runs-on: self-hosted  # Use self-hosted runner
+    runs-on: self-hosted 
     steps:
       - name: Checking Docker Installation
         run: |
           docker version
           
       - name: Checkout Repository
-        uses: actions/checkout@v4  # Checkout code
+        uses: actions/checkout@v4 
         
       - name: Docker Login
-        uses: docker/login-action@v2  # Docker login action
+        uses: docker/login-action@v2 
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}  # Your Docker Hub username stored in secrets
-          password: ${{ secrets.DOCKER_PASSWORD }}  # Your Docker Hub password or token stored in secrets
+          username: ${{ secrets.DOCKER_USERNAME }}  
+          password: ${{ secrets.DOCKER_PASSWORD }} 
 
       - name: Build Docker Image
         run: |
-          # Use GITHUB_SHA for the commit ID tag
+     
           docker image build -t ${{env.IMAGE_NAME}}:latest -t ${{env.IMAGE_NAME}}:${{github.sha}} .
     
       - name: Push Docker Image
@@ -33,6 +33,17 @@ jobs:
           docker image push ${{env.IMAGE_NAME}}:latest
           docker image push ${{env.IMAGE_NAME}}:${{github.sha}}
 
+      - name: Stop and Remove Existing Container (if running)
+        run: |
+         
+          if [ "$(docker ps -q -f flaskapp)" ]; then
+            echo "Stopping and removing existing container 'flaskapp'..."
+            docker container stop flaskapp
+            docker container rm flaskapp                
+          else 
+            echo "No running container named 'flaskapp' found."
+          fi
+                
       - name: Running Docker Container
         run: |
           docker container run -d --name flaskapp -p 8080:5000 ${{env.IMAGE_NAME}}:latest
